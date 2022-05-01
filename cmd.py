@@ -7,6 +7,7 @@ class Executor:
         self.mode = 'c'
         if mode == 'k':
             self.mode = mode
+        os.system(f'cmd /c "color 02"')
     
     def __call__(self, cmd):
         self.cmd = cmd.strip()
