@@ -38,6 +38,6 @@ if __name__ == '__main__':
     exec = Executor('k')
     while True:
         try:
-            exec(input(f'(base) {os.getcwd()}>'))
+            exec(input(f'{os.getcwd()}>'))
         except Exception as e:
             print(e)
