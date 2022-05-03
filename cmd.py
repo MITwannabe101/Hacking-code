@@ -7,7 +7,7 @@ class Executor:
         self.mode = 'c'
         if mode == 'k':
             self.mode = mode
-        os.system(f'cmd /c "color 02"')
+        os.system('cmd /c "color 02"')
     
     def __call__(self, cmd):
         self.cmd = cmd.strip()
@@ -18,26 +18,26 @@ class Executor:
         return self.beautify(self.exec())
         
     def exec(self):
-        return os.system(f'cmd /{self.mode} "{self.cmd}"')
+        return os.system('cmd /%s "%s"'% (self.mode, self.cmd))
 
     def beautify(self, text):
+        string = ''
         for i in range(len(text)):
             if text[i] != '\\':
-                sys.stdout.write(text[i])
-                sys.stdout.flush()
+                string.append(text[i])
             else:
                 i += 1
-                if text[i]=='n': print('')
+                if text[i]=='n': string.append('\n')
                 if text[i]=='r': continue
                 else:
-                    sys.stdout.write('\\')
-                    sys.stdout.flush()
+                    string.append('\\')
+        return string
        
 
 if __name__ == '__main__':
     exec = Executor('k')
     while True:
         try:
-            exec(input(f'{os.getcwd()}>'))
+            print(exec(input('%s>' % os.getcwd())))
         except Exception as e:
             print(e)
