@@ -6,7 +6,7 @@ import urllib.request as request
 class HTMLParser:
     def __init__(self, html):
         self.html = html
-        self.indentation = '\t'
+        self.indentation = '  '
         self.num_indents = 0
         self.parse()
 
@@ -52,4 +52,3 @@ if __name__ == '__main__':
       response = str(response.read())[2:-1]
       print(response, '\n\n\n\n\n\n')
       HTMLParser(response)
-
