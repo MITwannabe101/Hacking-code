@@ -18,8 +18,11 @@ class Executor:
         return self.beautify(self.exec())
         
     def exec(self):
-        return os.system('cmd /%s "%s"'% (self.mode, self.cmd))
-
+        output = os.system('cmd /%s "%s"'% (self.mode, self.cmd))
+        if output = -1:
+            output = subprocess.check_output(shlex.split("systeminfo"), stderr=subprocess.STDOUT)
+        return  output
+                           
     def beautify(self, text):
         string = ''
         for i in range(len(text)):
