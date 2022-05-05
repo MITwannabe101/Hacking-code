@@ -8,10 +8,11 @@ class HTMLclient:
         self.commandlink = commandlink
 
         
-    def recievecommands(self, commandlink=self.commandlink):
+    def recievecommands(self, commandlink=''):
         """GET request to web page to get commands"""
-        with request.urlopen('%s' % commandlink) as response:
-            rawcommands = response.read()[2:-1]
+        if commandlink=='': commandlink=self.commandlink
+        with request.urlopen(commandlink) as response:
+            rawcommands = response.read().decode()
         commands = json.loads(rawcommands)
         return commands
 
