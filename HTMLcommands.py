@@ -38,5 +38,5 @@ class HTMLclient:
         return commands
 
 if __name__ == '__main__':
-    #x = HTMLclient('https://api.wheretheiss.at/v1/satellites/25544')
-    #print(x.recievecommands())
+    client = HTMLclient('https://api.wheretheiss.at/v1/satellites/25544')
+    print(client.recievecommands())
