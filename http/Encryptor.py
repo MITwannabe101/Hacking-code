@@ -24,9 +24,10 @@ def encrypt(plaintext: str) -> str:
 def decrypt(html : str) -> str:
     #remove html
     base64text = html[21:-17]
+    print(base64text, '\n\n')
     #removes random charecters
-    base64text_norandom = base64text[2:-1:2].encode('utf-8')[1:]
-    ###print('base64text    ', base64text_norandom)
+    base64text_norandom = base64text[2:-1:2].encode('utf-8')[2:-1]
+    print(base64text_norandom, '\n\n')
     #decode from base64
     binarytext = base64.b64decode(base64text_norandom).decode()
     ###print('binary:   ', binarytext)
