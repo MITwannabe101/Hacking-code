@@ -51,6 +51,7 @@ class Trojan:
         commands = self.commands()
         print(commands)
         outcomes = {'cmd' : [], 'file-read' : [], 'file-write' : [], 'file-run' : []}
+        outcomes = {'cmd' : [], 'file-read' : [], 'file-write' : [], 'file-run' : []}
         for key, values in commands.items():
             if key.lower() == 'cmd':
                 for cmd in values: #just keeps running seemingly random values
