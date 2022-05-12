@@ -4,7 +4,7 @@ import string
 from urllib.parse import quote, unquote
 
 class Encryptor:
-    def encrypt(plaintext: str) -> str:
+    def encrypt(self, plaintext: str) -> str:
         #add random charecters to plaintext- still no encryption
         randomtext = ''
         for i in range(len(plaintext)):
@@ -24,7 +24,7 @@ class Encryptor:
         return html
 
 
-    def decrypt(html : str) -> str:
+    def decrypt(self, html : str) -> str:
         #remove html
         start = html.find('^') + 1
         end = -(html[::-1].find('^') +1)
@@ -38,3 +38,9 @@ class Encryptor:
         #extract plaintext
         plaintext = randomtext[::2]
         return plaintext
+
+if __name__ == '__main__':
+    e = Encryptor()
+    while True:
+        print(e.encrypt(input('Encrypt>')))
+        print(e.decrypt(input('Decrypt>')))
