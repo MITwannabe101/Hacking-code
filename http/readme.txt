@@ -18,7 +18,7 @@ Interface: 10.4.201.22 --- 0x4
     10.4.207.30           00-50-56-a3-6b-1b     dynamic   
     10.4.207.31           00-50-56-a3-00-c4     dynamic   
     10.4.207.32           00-50-56-b5-95-62     dynamic   
-    10.4.207.247          08-35-71-f9-7b-8d     dynamic   
+    <strong>10.4.207.247          08-35-71-f9-7b-8d     dynamic</strong>
     10.4.207.251          94-f1-28-d5-89-00     dynamic   
     10.4.207.255          ff-ff-ff-ff-ff-ff     static    
     224.0.0.22            01-00-5e-00-00-16     static    
