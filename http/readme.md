@@ -1,6 +1,6 @@
-school intranet
+<h3>school intranet<h3>
 
->>>arp -a
+<h5>>arp -a
 Interface: 10.4.201.22 --- 0x4
     Internet Address      Physical Address      Type
     10.4.200.10           00-50-56-a3-16-a7     dynamic   
@@ -27,7 +27,7 @@ Interface: 10.4.201.22 --- 0x4
     239.255.255.250       01-00-5e-7f-ff-fa     static    
     255.255.255.255       ff-ff-ff-ff-ff-ff     static
   
->>>ping 10.4.207.247
+>ping 10.4.207.247
 Pinging 10.4.207.247 with 32 bytes of data:
 Reply from 10.4.207.247: bytes=32 time<1ms TTL=63
 Reply from 10.4.207.247: bytes=32 time=1ms TTL=63
@@ -38,3 +38,4 @@ Ping statistics for 10.4.207.247:
     Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
 Approximate round trip times in milli-seconds:
     Minimum = 0ms, Maximum = 1ms, Average = 0ms
+</h5>
