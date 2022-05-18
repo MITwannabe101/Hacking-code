@@ -1,6 +1,6 @@
-<h3>school intranet<h3>
+school intranet
 
-<h5>>arp -a
+>arp -a
 Interface: 10.4.201.22 --- 0x4
     Internet Address      Physical Address      Type
     10.4.200.10           00-50-56-a3-16-a7     dynamic   
@@ -18,7 +18,7 @@ Interface: 10.4.201.22 --- 0x4
     10.4.207.30           00-50-56-a3-6b-1b     dynamic   
     10.4.207.31           00-50-56-a3-00-c4     dynamic   
     10.4.207.32           00-50-56-b5-95-62     dynamic   
-    <strong>10.4.207.247          08-35-71-f9-7b-8d     dynamic</strong>
+    10.4.207.247          08-35-71-f9-7b-8d     dynamic
     10.4.207.251          94-f1-28-d5-89-00     dynamic   
     10.4.207.255          ff-ff-ff-ff-ff-ff     static    
     224.0.0.22            01-00-5e-00-00-16     static    
@@ -38,4 +38,12 @@ Ping statistics for 10.4.207.247:
     Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
 Approximate round trip times in milli-seconds:
     Minimum = 0ms, Maximum = 1ms, Average = 0ms
-</h5>
+Windows IP Configuration
+
+>ipconfig
+Ethernet adapter Ethernet:
+
+   Connection-specific DNS Suffix  . : sheldonsch.internal
+   IPv4 Address. . . . . . . . . . . : 10.4.201.22
+   Subnet Mask . . . . . . . . . . . : 255.255.248.0
+   Default Gateway . . . . . . . . . : 10.4.207.251
