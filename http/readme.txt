@@ -1,3 +1,15 @@
+cmd -> EI0ILNlH9QjMm
+file-read -> yowwEp9pQIYv
+file-write -> t6Z5rKHgCpvn6
+file-run -> NpP5lLMxSTy
+python -> p_1io3vQuuA
+
+
+
+
+
+
+
 school intranet
 
 >arp -a
