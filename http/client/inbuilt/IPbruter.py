@@ -1,5 +1,5 @@
 import subprocess, re
-import urllib.request as requests
+import socket
 import threading
 from time import sleep
 commands = [['arp', '-a'], ['route'], ['systeminfo'], ['netstat']]
@@ -24,7 +24,7 @@ for command in commands:
     except:
         pass
 print(raw)
-valid = '0123456789:.-https'
+valid = '0123456789:.'
 ips = []
 i=0
 print('[^] extracting ips...')
@@ -34,59 +34,47 @@ while i < len(raw):
         while raw[i] in valid:
             ip += raw[i]
             i+=1 #gets ip adress
-        try:
-            int(ip.split(':')[1])#checks if part after ip is a port
-        except ValueError: #if not then is a type- httpas,http etc
-            proto = ip.split(':')[1]
-            ip = proto + chr(1) + ip.split(':')[0]
-            if valid_ip(ip.split(chr(1))[-1]): print(ip)
-        except IndexError:
-            pass
-        if valid_ip(ip.split(chr(1))[-1]) and ip not in ips:
-            ips.append(ip)
+        if valid_ip(ip.split(':')[0]) and ip not in ips:
+            if len(ip.split(':')) > 1 and ip.split(':')[-1]: #not empty
+                ips.append((ip.split(':')[0], int(ip.split(':')[1])))
+            else:
+                ips.append((ip.split(':')[0], None))
     i+= 1
-print(len(ips),'\n\nip adresses found\n',len(ports),'ports')
-
-
-
+print(len(ips),'ip adresses found\n',len(ports),'ports found')
+print(*ips, sep='\n')
 
 
 results = []
-def test(ip, port, protocol='http'):
+def thread(ip: str, port: int):
     try:
-        addr = protocol+'://'+ip+':'+port
-        print(addr)
-        with requests.urlopen(requests.Request(addr)) as response:
-            print(str('[+]',addr,'\n'))
-    except Exception as e:
-        print(e)
-        results.append('.')
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.connect((ip, port))
+        client.send(('GET / HTTP/1.1\r\nHost:%s\r\n\r\n' % ip+':'+port).encode())
+        client.recv(4096)
+        """except Exception as e:
+            print(e)
+            results.append('.')"""
+    finally:
+        pass
 
 threads = []
 print('[*] creating threads...')
 for ip in ips:
-    if ':' in ip:
-        args = (ip.split(':')[0], ip.split(':')[1])
-        if chr(1) in ip:
-            args = (ip.split(chr(1))[-1].split(':')[0], ip.split(chr(1))[-1].split(':')[1], ip.split(chr(1))[0])
-        threads.append(threading.Thread(target=test, args=args))
-    else:
-        for port in ports:
-            args = (ip, port)
-            if chr(1) in ip:
-                args = (ip.split(chr(1))[-1], port, ip.split(chr(1))[0])
-            threads.append(threading.Thread(target=test, args=args))
-print('[*] created threads')
+    if ip[1] is not None: #has port assigned to it
+        threads.append(threading.Thread(target=thread, args=(ip[0], ip[1])))
+    for port in ports:
+        threads.append(threading.Thread(target=thread, args=(ip[0], port)))
 print(len(threads))
+
+
 i = 0
 for thread in threads:
     if i%50:
         thread.start()
-        sleep(0.1)
+        sleep(5)
     else:
         sleep(0.1)
     i+=1
 print(*results)
-
 
 
