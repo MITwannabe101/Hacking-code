@@ -4,8 +4,8 @@ import threading
 from time import sleep
 import sys
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-ports = [443,19005,22,17775,80,445,15182,5060,5341,53,4978,1723,4718,8080,4207,21,2777,25,2350,4567,2328,3389,2200,8081,1856,8000,1841,110,1630,23,1418,10000,1396,81,1228,8082,1228,5000,1208,445,1072,143,1024,111,957,7547,893,
-         135,873,587,846,139,818,28960,813,29900,804,18067,803,27374,801,1024,747,30005,711,7676,705,389,691,1026,678,4444,661,1025,628,1027,604,20,588,1050,555,1028,539,5678,533,1029,526,1863,507,8594,490,3783,482,1002,473,4664,472,37]
+ports = [20,21,22,23,25,37,53,80,81,110,111,135,139,143,389,442,443,445,445,472,473,482,490,507,526,533,539,555,587,588,604,628,661,678,691,705,711,747,801,803,804,813,818,846,873,893,
+         957, 1002, 1024, 1024, 1025, 1026, 1027, 1028, 1029, 1050, 1072, 1208, 1228, 1228, 1396, 1418, 1630, 1723, 1841, 1856, 1863, 2200, 2328, 2350, 2777, 3389, 3783, 4207, 4444, 4567, 4664, 4718, 4978, 5000, 5060, 5341, 5678, 7547, 7676, 8000, 8080, 8081, 8082, 8594, 10000, 15182, 17775, 18067, 19005, 27374, 28960, 29900, 30005]
 class IPExtractionUnit:
     def __init__(self, *commands):
         self.commands = [command.split() for command in commands]
@@ -43,6 +43,7 @@ class IPExtractionUnit:
         return set(ips)
 
 
+
 class IPTestingUnit:
     def __init__(self, addrs, ports):
         self.addrs = addrs
@@ -74,25 +75,28 @@ class IPTestingUnit:
         
     def display(self):
         for found in self.open:
+            print('[*] {}:{}'.format(found[0], found[1]), end='')
+            for _ in range(25- len('[*] {}:{}'.format(found[0], found[1]))):
+                print(' ', end='')
             if type(found[2]) == None:
-                print('[*] {}:{} service- unable to identify'.format(found[0], found[1]))
+                print('service-not found')
             else:
-                if type(found[2]) == None: #not empty
-                    print('[*] {}:{} service- {}\\{}'.format(found[0], found[1], found[2][0], found[2][1]))
-                else:
-                    print('[*] {}:{} service- {}'.format(found[0], found[1], found[2][0]))
-
-    def test(self, addr, port):
-        sys.stdout.write('.')
-        sys.stdout.flush()
+                print('service- {}'.format(found[2][0]))
+            if found[3] is not None:
+                print(found[3].decode())
+            
+    def test(self, addr, port=80):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(5)
         result = sock.connect_ex((addr,port))
-        sock.close()
         if result == 0:
+                try: banner = sock.recv(4096)
+                except socket.timeout: banner = None
                 try: hostname = socket.gethostbyaddr(addr)
                 except: hostname = None
-                self.open.append((addr, port, hostname))
+                try: self.open.append([addr, port, list(hostname), banner])
+                except: pass
+        sock.close()
         return None
 
 
