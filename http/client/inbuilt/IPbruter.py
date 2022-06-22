@@ -5,7 +5,8 @@ from time import sleep
 import sys
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 ports = [20,21,22,23,25,37,53,80,81,110,111,135,139,143,389,442,443,445,445,472,473,482,490,507,526,533,539,555,587,588,604,628,661,678,691,705,711,747,801,803,804,813,818,846,873,893,
-         957, 1002, 1024, 1024, 1025, 1026, 1027, 1028, 1029, 1050, 1072, 1208, 1228, 1228, 1396, 1418, 1630, 1723, 1841, 1856, 1863, 2200, 2328, 2350, 2777, 3389, 3783, 4207, 4444, 4567, 4664, 4718, 4978, 5000, 5060, 5341, 5678, 7547, 7676, 8000, 8080, 8081, 8082, 8594, 10000, 15182, 17775, 18067, 19005, 27374, 28960, 29900, 30005]
+         957, 1002, 1024, 1024, 1025, 1026, 1027, 1028, 1029, 1050, 1072, 1208, 1228, 1228, 1396, 1418, 1630, 1723, 1841, 1856, 1863, 2200, 2328, 2350, 2777, 3389, 3783, 4207, 4444, 4567,
+         4664, 4718, 4978, 5000, 5060, 5341, 5678, 7547, 7676, 8000, 8080, 8081, 8082, 8594, 10000, 15182, 17775, 18067, 19005, 27374, 28960, 29900, 30005]
 class IPExtractionUnit:
     def __init__(self, *commands):
         self.commands = [command.split() for command in commands]
@@ -46,20 +47,23 @@ class IPExtractionUnit:
 
 class IPTestingUnit:
     def __init__(self, addrs, ports):
-        self.addrs = addrs
+        self.addrs = list(addrs)
         self.ports = ports
         self.open = []
+        self.num=int(input('Num IPs to test>'))
 
     def run(self):
         print('[^] initiating testing')
         threads = []
-        for addr in self.addrs:
+        for addr in self.addrs[:self.num-1]:
             if addr[1] != None:
                 threads.append(threading.Thread(target=self.test, args=(addr[0], addr[1])))
             else:
                 for port in self.ports:
                     threads.append(threading.Thread(target=self.test, args=(addr[0], port)))
         num_threads = len(threads)
+        print(num_threads)
+        print('Threads created')
         while len(threads) > 0:
             try:
                 threads.pop().start()
@@ -67,9 +71,7 @@ class IPTestingUnit:
                 MAX_THREADS = threading.active_count()
                 for i in range(len(threads)):
                     if i % MAX_THREADS == 0:
-                        print('exceeded max threads')
-                        sleep(5)
-                        print('finished operation: exceeded max threads')
+                        sleep(6)
                     threads.pop().start()
         self.display()
         
@@ -83,7 +85,7 @@ class IPTestingUnit:
             else:
                 print('service- {}'.format(found[2][0]))
             if found[3] is not None:
-                print(found[3].decode())
+                print(*found[3].decode().split('\n')[:-1], sep='\t')
             
     def test(self, addr, port=80):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -99,8 +101,13 @@ class IPTestingUnit:
         sock.close()
         return None
 
-
-                
+while True:
+    extensive = input('[?] do you want to run an extensive scan. this scans every port on a system, but takes longer. Y\\N>')
+    if extensive.lower() == 'y':
+        ports = [i for i in range(1, 65536)]
+        break
+    elif extensive.lower() == 'n':
+        break
 IPtester = IPTestingUnit(IPExtractionUnit('arp -a', 'netstat', 'systeminfo')(), ports)
 IPtester.run()
 
