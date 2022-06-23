@@ -50,29 +50,36 @@ class IPTestingUnit:
         self.addrs = list(addrs)
         self.ports = ports
         self.open = []
-        self.num=int(input('Num IPs to test>'))
 
     def run(self):
         print('[^] initiating testing')
         threads = []
-        for addr in self.addrs[:self.num-1]:
+        for addr in self.addrs:
             if addr[1] != None:
                 threads.append(threading.Thread(target=self.test, args=(addr[0], addr[1])))
             else:
                 for port in self.ports:
                     threads.append(threading.Thread(target=self.test, args=(addr[0], port)))
         num_threads = len(threads)
-        print(num_threads)
-        print('Threads created')
-        while len(threads) > 0:
-            try:
-                threads.pop().start()
-            except RuntimeError:
-                MAX_THREADS = threading.active_count()
-                for i in range(len(threads)):
-                    if i % MAX_THREADS == 0:
-                        sleep(6)
+        print('[*]'+str(num_threads)+'Threads created')
+        try:
+            while len(threads) > 0:
+                file = open('intranetscanresults.txt', 'a')
+                try:
                     threads.pop().start()
+                except RuntimeError:
+                    for _ in range(len(self.open)):
+                        file.write(self.open.pop())
+                    MAX_THREADS = threading.active_count()
+                    for i in range(len(threads)):
+                        if i % MAX_THREADS == 0:
+                            print('writing '+str(len(self.open))+' open ports to file')
+                            for _ in range(len(self.open)):
+                                file.write(self.open.pop())
+                            sleep(5)
+                        threads.pop().start()
+        except KeyboardInterrupt:
+            file.close()
         self.display()
         
     def display(self):
